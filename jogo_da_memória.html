@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Treino de Memória de Números</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, #1e3c72, #2a5298);
+    color: #fff;
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+
+  #nivelDisplay {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+
+  #sequencia {
+    font-size: 3em;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px 40px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    letter-spacing: 10px;
+    transition: all 0.3s ease;
+  }
+
+  input {
+    font-size: 1.5em;
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 20px;
+    width: 250px;
+    text-align: center;
+  }
+
+  input:focus {
+    outline: none;
+    box-shadow: 0 0 10px #ffd700;
+  }
+
+  button {
+    font-size: 1.2em;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background: #ffd700;
+    color: #1e3c72;
+    font-weight: bold;
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  button:hover {
+    transform: scale(1.1);
+    background: #ffc107;
+  }
+
+  #resultado {
+    font-size: 1.2em;
+    margin-top: 20px;
+    text-align: center;
+    white-space: pre-line;
+  }
+
+  .container {
+    background: rgba(0,0,0,0.2);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.3);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Treino de Memória</h1>
+  <div id="nivelDisplay">Nível: 3</div>
+  <div id="sequencia"></div>
+  <input type="text" id="inputSequencia" placeholder="Digite a sequência" style="display:none;">
+  <br>
+  <button id="btnVerificar" style="display:none;">Verificar</button>
+  <div id="resultado"></div>
+</div>
+
+<script>
+let nivel = 3;
+let sequencia = [];
+
+function gerarSequencia(tamanho) {
+    sequencia = [];
+    for(let i = 0; i < tamanho; i++) {
+        sequencia.push(Math.floor(Math.random() * 10));
+    }
+}
+
+function mostrarSequencia() {
+    document.getElementById('resultado').innerText = '';
+    document.getElementById('inputSequencia').value = '';
+    document.getElementById('inputSequencia').style.display = 'none';
+    document.getElementById('btnVerificar').style.display = 'none';
+
+    gerarSequencia(nivel);
+    document.getElementById('nivelDisplay').innerText = `Nível: ${nivel}`;
+    document.getElementById('sequencia').innerText = sequencia.join(' ');
+
+    setTimeout(() => {
+        document.getElementById('sequencia').innerText = '';
+        document.getElementById('inputSequencia').style.display = 'inline';
+        document.getElementById('btnVerificar').style.display = 'inline';
+        document.getElementById('inputSequencia').focus();
+    }, 3000 + nivel * 500);
+}
+
+document.getElementById('btnVerificar').addEventListener('click', () => {
+    const tentativa = document.getElementById('inputSequencia').value.replace(/\s+/g, '');
+    let acertos = 0;
+    const sequenciaStr = sequencia.join('');
+
+    for(let i = 0; i < Math.min(sequenciaStr.length, tentativa.length); i++){
+        if(sequenciaStr[i] === tentativa[i]) acertos++;
+    }
+
+    document.getElementById('resultado').innerText = 
+        `Você acertou ${acertos} de ${nivel} números.\nSequência correta: ${sequenciaStr}`;
+
+    if(confirm("Deseja tentar um nível maior?")) {
+        nivel++;
+    }
+
+    setTimeout(mostrarSequencia, 2000);
+});
+
+mostrarSequencia();
+</script>
+</body>
+</html>
